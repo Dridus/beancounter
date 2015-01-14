@@ -24,7 +24,7 @@ import           Data.Maybe (Maybe(Just, Nothing), maybe)
 import           Data.Monoid (Monoid(mappend, mempty))
 import           Data.Monoid.Unicode ((⊕))
 import           Data.Text (Text, intercalate, pack, splitOn, strip, unpack)
-import           Prelude (Fractional, Num, Ord, Real, RealFrac, (+), fromRational, toRational, round)
+import           Prelude (Fractional, Num, Ord, Real, RealFrac, (+), fromRational, filter, not, (.), (==), toRational, round)
 import           Prelude.Unicode ((÷), (⋅))
 import           System.Environment (getArgs)
 import           System.IO (IO, putStrLn)
@@ -68,7 +68,7 @@ main = do
 
             percentageOfBag g = 100 ⋅ (toMicro (unGrams g) ÷ toMicro (unGrams pbagSize))
 
-            peopleColumns = intercalate "\t" $ people ≫= \ person →
+            peopleColumns = intercalate "\t" $ filter (not . (==) "--") people ≫= \ person →
                 let (g, m) = Map.findWithDefault mempty person bagSummary
                 in [pack ∘ show ∘ unGrams $ g, pack ∘ show ∘ roundToInt ∘ percentageOfBag $ g, pack ∘ show ∘ toCenti ∘ unMoney $ m]
         in putStrLn ∘ unpack
